@@ -6,17 +6,23 @@ import {
   HR,
   Select,
   TextInput,
-  Label
+  Label,
+  Modal, Alert
 } from 'flowbite-react';
-import { IconPencil, IconTrash, IconDeviceFloppy, IconStar, IconStarFilled } from '@tabler/icons-react';
+import { IconPencil, IconTrash, IconDeviceFloppy, IconStar, IconStarFilled, IconAlertOctagon } from '@tabler/icons-react';
 import { ContactContext } from '@/app/context/Conatactcontext/index';
 import { ContactType } from '@/app/(DashboardLayout)/types/apps/contact';
 import Image from 'next/image';
 
+
+
 const ContactListItem: React.FC = () => {
-  const { selectedContact, deleteContact, updateContact, starredContacts, toggleStarred }: any = useContext(ContactContext);
+  const { selectedContact, deleteContact, updateContact, starredContacts, toggleStarred, openModal, setOpenModal }: any = useContext(ContactContext);
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
   const [formData, setFormData] = useState<ContactType | null>(null);
+  const [showAlert, setShowAlert] = useState(false); // State for showing alert
+
+
 
   useEffect(() => {
     setFormData(selectedContact);
@@ -31,6 +37,10 @@ const ContactListItem: React.FC = () => {
       updateContact(formData);
     }
     setIsEditMode(false);
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 5000);
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +56,7 @@ const ContactListItem: React.FC = () => {
   const handleDeleteClick = () => {
     if (selectedContact) {
       deleteContact(selectedContact.id);
+      setOpenModal(true);
     }
   };
 
@@ -205,6 +216,33 @@ const ContactListItem: React.FC = () => {
           </div>
         )}
       </div>
+
+      <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <IconAlertOctagon className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this contact?
+            </h3>
+            <div className="flex justify-center gap-4">
+              <Button color="failure" onClick={() => setOpenModal(false)}>
+                {"Yes"}
+              </Button>
+              <Button color="gray" onClick={() => setOpenModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {showAlert && (
+        <Alert color='warning' rounded className='fixed top-3 '>
+          Contact updated successfully.
+        </Alert>
+      )}
+
     </>
   );
 };

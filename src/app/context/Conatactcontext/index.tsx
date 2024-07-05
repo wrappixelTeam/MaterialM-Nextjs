@@ -19,6 +19,8 @@ export interface ContactContextType {
   toggleStarred: (contactId: number) => void;
   searchTerm: string;
   updateSearchTerm: (term: string) => void;
+  openModal: boolean;
+  setOpenModal: (collapse: boolean) => void;
 
 }
 export const ContactContext = createContext<ContactContextType | any>(undefined);
@@ -28,6 +30,7 @@ export const ContactContextProvider: React.FC<{ children: ReactNode }> = ({ chil
   const [selectedContact, setSelectedContact] = useState<ContactType | null>(null);
   const [selectedDepartment, setSelectedDepartment] = useState<string>('All');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [openModal, setOpenModal] = useState<boolean>(false);
 
   // Fetch contacts data from the API on component mount
   useEffect(() => {
@@ -53,9 +56,11 @@ export const ContactContextProvider: React.FC<{ children: ReactNode }> = ({ chil
     setSearchTerm(term);
   };
 
+
   const addContact = (newContact: ContactType) => {
-    setContacts([...contacts, newContact]);
+    setContacts([newContact, ...contacts]);
   };
+
 
   // Function to delete a contact
   const deleteContact = async (contactId: string | number) => {
@@ -116,8 +121,7 @@ export const ContactContextProvider: React.FC<{ children: ReactNode }> = ({ chil
     toggleStarred,
     searchTerm,
     updateSearchTerm,
-
-
+    openModal, setOpenModal
   };
 
   return (

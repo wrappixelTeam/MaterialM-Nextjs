@@ -1,19 +1,18 @@
+'use client'
 import Link from "next/link";
-import { useDispatch } from "@/store/hooks";
 import { IconEye, IconMessage2, IconPoint } from "@tabler/icons-react";
 import { format } from "date-fns";
-import { fetchBlogPost } from "@/store/apps/blog/BlogSlice";
 import { BlogPostType } from "../../../(DashboardLayout)/types/apps/blog";
 import { Avatar, Badge, Card } from "flowbite-react";
-import Image from "next/image";
+import { BlogContext, BlogContextProps } from '@/app/context/BlogContext/index';
+import React, { useEffect, useContext } from "react";
+
 
 interface Btype {
   post: BlogPostType;
   index: number;
 }
-
 const BlogFeaturedCard = ({ post, index }: Btype) => {
-  const dispatch = useDispatch();
   const { coverImg, title, view, comments, category, author, createdAt }: any =
     post;
   const linkTo = title
@@ -21,14 +20,21 @@ const BlogFeaturedCard = ({ post, index }: Btype) => {
     .replace(/ /g, "-")
     .replace(/[^\w-]+/g, "");
   const mainPost = index === 0;
+  const { setLoading }: BlogContextProps = useContext(BlogContext);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
       {post ? (
         <div
-          className={`lg:col-span-${
-            mainPost ? 8 : 4
-          } md:col-span-12 col-span-12`}
+          className={`lg:col-span-${mainPost ? 8 : 4
+            } md:col-span-12 col-span-12`}
         >
           <Card
             className="w-full h-[400px] p-0 overflow-hidden flex-row shadow-none feature-card relative card-hover"
@@ -68,5 +74,9 @@ const BlogFeaturedCard = ({ post, index }: Btype) => {
     </>
   );
 };
-
 export default BlogFeaturedCard;
+
+
+
+
+

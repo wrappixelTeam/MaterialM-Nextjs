@@ -1,21 +1,19 @@
+'use client'
 import { format } from "date-fns";
-import { useDispatch } from "@/store/hooks";
 import { IconEye, IconMessage2, IconPoint } from "@tabler/icons-react";
-import { fetchBlogPost } from "@/store/apps/blog/BlogSlice";
 import { BlogPostType } from "../../../(DashboardLayout)/types/apps/blog";
 import CardBox from "../../shared/CardBox";
 import Link from "next/link";
 import Image from "next/image";
 import { Avatar, Badge, Tooltip } from "flowbite-react";
+
 interface Btype {
   post: BlogPostType;
   index?: number;
 }
 const BlogCard = ({ post }: Btype) => {
-  const dispatch = useDispatch();
   const { coverImg, title, view, comments, category, author, createdAt }: any =
     post;
-
   const linkTo = title
     .toLowerCase()
     .replace(/ /g, "-")
@@ -27,13 +25,13 @@ const BlogCard = ({ post }: Btype) => {
           <div className="relative">
             <Link href={`/apps/blog/detail/${linkTo}`} >
               <div className="overflow-hidden h-[240px]">
-              <Image
-                src={coverImg}
-                alt="materialm"
-                height={240}
-                width={500}
-                className="w-100"
-              />
+                <Image
+                  src={coverImg}
+                  alt="materialm"
+                  height={240}
+                  width={500}
+                  className="w-100"
+                />
               </div>
               <Badge color={"white"} className="absolute bottom-8 end-6">
                 2 min Read
@@ -60,7 +58,7 @@ const BlogCard = ({ post }: Btype) => {
                   <IconEye size="18" className="text-dark dark:text-white" /> {view}
                 </div>
                 <div className="flex gap-2 items-center text-darklink text-[15px]">
-                  <IconMessage2 size="18" className="text-dark dark:text-white"  /> {comments?.length}
+                  <IconMessage2 size="18" className="text-dark dark:text-white" /> {comments?.length}
                 </div>
                 <div className="ms-auto flex gap-2 items-center  text-darklink text-[15px]">
                   <IconPoint size="16" className="text-dark dark:text-white" />

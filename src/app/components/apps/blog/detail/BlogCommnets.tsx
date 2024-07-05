@@ -1,9 +1,11 @@
-import React from "react";
-import { IconArrowBackUp, IconCircle, IconDots } from "@tabler/icons-react";
+'use  client'
+import React, { useState } from "react";
+import { IconArrowBackUp } from "@tabler/icons-react";
 import { BlogType } from "../../../../(DashboardLayout)/types/apps/blog";
 import { Avatar, Button, TextInput, Tooltip } from "flowbite-react";
+
 const BlogComment = ({ comment }: BlogType | any) => {
-  const [showReply, setShowReply] = React.useState(false);
+  const [showReply, setShowReply] = useState(false);
   return (
     <>
       <div className="mt-5 p-5 bg-muted dark:bg-darkmuted rounded-lg">
@@ -56,7 +58,7 @@ const BlogComment = ({ comment }: BlogType | any) => {
               <Avatar img={comment?.profile.avatar} rounded size="sm" />
             </div>
             <TextInput className="form-control w-full" placeholder="Reply" />
-            <Button color={"primary"}>Reply</Button>
+            <Button color={"primary"} >Reply</Button>
           </div>
         </div>
       ) : (
@@ -65,5 +67,4 @@ const BlogComment = ({ comment }: BlogType | any) => {
     </>
   );
 };
-
 export default BlogComment;

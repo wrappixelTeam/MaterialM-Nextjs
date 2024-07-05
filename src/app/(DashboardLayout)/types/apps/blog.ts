@@ -14,15 +14,17 @@ export interface BlogType {
 }
 
 export interface BlogPostType {
-  id?: number;
+  id?: number|any;
   title?: any;
-  content?: string;
-  coverImg?: string;
+  content?: string |any;
+  coverImg?: string |any;
   createdAt?: Date;
   view?: number;
   share?: number;
-  category?: string;
+  category?: string |any;
   featured?: boolean;
-  author?: Profile;
+  author?: Profile | any;
   comments?: any[];
 }
+
+

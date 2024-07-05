@@ -2,6 +2,8 @@
 import BreadcrumbComp from '@/app/(DashboardLayout)/layout/shared/breadcrumb/BreadcrumbComp';
 import BlogDetailData from '@/app/components/apps/blog/detail';
 import React from 'react'
+import { BlogProvider } from '@/app/context/BlogContext/index';
+
 
 const BCrumb = [
   {
@@ -15,8 +17,10 @@ const BCrumb = [
 const BlogDetail = () => {
   return (
     <>
-      <BreadcrumbComp title="Blog Detail" items={BCrumb} />
-      <BlogDetailData/>
+      <BlogProvider>
+        <BreadcrumbComp title="Blog Detail" items={BCrumb} />
+        <BlogDetailData />
+      </BlogProvider>
     </>
   )
 }

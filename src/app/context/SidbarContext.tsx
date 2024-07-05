@@ -23,6 +23,7 @@ interface SidebarContextState {
   setIsBorderRadius: (radius: number) => void;
   isCollapse: boolean;
   setIsCollapse: (collapse: boolean) => void;
+
 }
 
 // Create the context with an initial value
@@ -45,6 +46,7 @@ const SidebarContext = createContext<SidebarContextState>({
   setIsBorderRadius: () => { },
   isCollapse: false,
   setIsCollapse: () => { },
+
 });
 
 // Define the type for the children prop
@@ -62,6 +64,8 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
   const [isLayout, setIsLayout] = useState<string>('');
   const [isBorderRadius, setIsBorderRadius] = useState<number>(0);
   const [isCollapse, setIsCollapse] = useState<boolean>(false);
+
+
 
   return (
     <SidebarContext.Provider
@@ -84,6 +88,7 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
         setIsBorderRadius,
         isCollapse,
         setIsCollapse,
+
       }}
     >
       {children}

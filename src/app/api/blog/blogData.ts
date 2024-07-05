@@ -230,33 +230,12 @@ const BlogPost: BlogPostType[] = [
   },
 ];
 
+
 mock.onGet("/api/data/blog/BlogPosts").reply(() => {
   return [200, BlogPost];
 });
 
 // ----------------------------------------------------------------------
-mock.onPost("/api/data/blog/post").reply((config) => {
-  try {
-    const { title } = JSON.parse(config.data);
-    const paramCase = (t: string) =>
-      t
-        .toLowerCase()
-        .replace(/ /g, "-")
-        .replace(/[^\w-]+/g, "");
-
-    const post = BlogPost.find((_post) => paramCase(_post.title) === title);
-
-    if (!post) {
-      return [404, { message: "Post not found" }];
-    }
-
-    return [200, { post }];
-  } catch (error) {
-    console.error(error);
-
-    return [500, { message: "Internal server error" }];
-  }
-});
 
 mock.onPost("/api/data/blog/post/add").reply((config) => {
   try {

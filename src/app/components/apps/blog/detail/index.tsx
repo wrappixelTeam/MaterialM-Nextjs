@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
-import { fetchBlogPosts, fetchBlogPost } from "@/store/apps/blog/BlogSlice";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import React, { useEffect, useContext } from "react";
+import { usePathname } from "next/navigation";
 import {
   IconEye,
   IconMessage2,
@@ -11,17 +10,13 @@ import {
 } from "@tabler/icons-react";
 import { format } from "date-fns";
 import { uniqueId } from "lodash";
-import { addComment } from "@/store/apps/blog/BlogSlice";
-import { useDispatch, useSelector } from "@/store/hooks";
-import { AppDispatch, AppState } from "@/store/store";
 import type {
-  BlogPostType,
   BlogType,
 } from "../../../../(DashboardLayout)/types/apps/blog";
 import CardBox from "@/app/components/shared/CardBox";
 import Image from "next/image";
 import {
-    Alert,
+  Alert,
   Avatar,
   Badge,
   Button,
@@ -31,19 +26,15 @@ import {
   Tooltip,
 } from "flowbite-react";
 import BlogComment from "./BlogCommnets";
+import { BlogContext, BlogContextProps } from '../../../../context/BlogContext/index';
+
 
 const BlogDetailData = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
+  const { posts, setLoading, addComment }: BlogContextProps = useContext(BlogContext);
   const pathName = usePathname();
-
-  const getTitle: string | any = pathName.split("/").pop();
-
+  const getTitle: string | any = pathName.split('/').pop();
+  const post = posts.find((p) => p.title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') === getTitle);
   const [replyTxt, setReplyTxt] = React.useState("");
-
-  useEffect(() => {
-    dispatch<any>(fetchBlogPosts());
-  }, [dispatch]);
 
   const paramCase = (t: string) =>
     t
@@ -51,34 +42,25 @@ const BlogDetailData = () => {
       .replace(/ /g, "-")
       .replace(/[^\w-]+/g, "");
 
-  // Get post
-  const getPost = useSelector((state: AppState) => state.blogReducer.blogposts);
-  console.log(getPost);
-  const post: BlogPostType | any = getPost.find(
-    (p: BlogPostType) => getTitle === paramCase(p.title)
-  );
-
-  const onSubmit = async (id: number, reply: string) => {
-    const replyId: string = uniqueId("#comm_");
-    const newReply = {
-      id: replyId,
+  const onSubmit = () => {
+    if (!post || !post.id) return;
+    const newComment = {
+      id: uniqueId('#comm_'),
       profile: {
-        id: uniqueId("#REPLY_"),
-        avatar: post?.author.avatar,
-        name: post?.author.name,
-        time: "now",
+        id: uniqueId('#USER_'),
+        avatar: post.author?.avatar || '',
+        name: post.author?.name || '',
+        time: 'Now',
       },
-      comment: reply,
+      comment: replyTxt,
       replies: [],
+      postId: post.id,
     };
-    dispatch<any>(addComment(id, newReply));
-    dispatch<any>(fetchBlogPost(getTitle));
-    setReplyTxt("");
+    addComment(post.id, newComment);
+    setReplyTxt('');
   };
 
   // skeleton
-  const [isLoading, setLoading] = React.useState(true);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -129,7 +111,7 @@ const BlogDetailData = () => {
                       size="18"
                       className="text-dark dark:text-white"
                     />{" "}
-                    {post?.comments.length}
+                    {post?.comments?.length || 0}
                   </div>
                   <div className="ms-auto flex gap-2 items-center  text-darklink text-[15px]">
                     <IconPoint
@@ -137,11 +119,7 @@ const BlogDetailData = () => {
                       className="text-dark dark:text-white"
                     />
                     <small>
-                      {post ? (
-                        <>{format(new Date(post.createdAt), "E, MMM d")}</>
-                      ) : (
-                        ""
-                      )}
+                      {post && post.createdAt ? format(new Date(post.createdAt), 'E, MMM d') : ''}
                     </small>
                   </div>
                 </div>
@@ -174,7 +152,6 @@ const BlogDetailData = () => {
                 top of the
               </p>
               <br></br>
-
               <p>
                 <b className="text-dark dark:text-white">
                   This is strong text.
@@ -221,20 +198,20 @@ const BlogDetailData = () => {
               value={replyTxt}
               onChange={(e) => setReplyTxt(e.target.value)}
             ></Textarea>
-            <Button color={"primary"} className="w-fit mt-3" onClick={() => onSubmit(post.id, replyTxt)}>
+            <Button color={"primary"} className="w-fit mt-3" onClick={onSubmit}>
               Post Comment
             </Button>
             <div className="mt-6">
               <div className="flex gap-3 items-center">
                 <h5 className="text-xl ">Comments</h5>
                 <div className="h-8 w-8 rounded-full bg-lightprimary dark:bg-darkprimary flex items-center justify-center text-primary font-bold">
-                  {post?.comments.length}
+                  {post?.comments?.length || 0}
                 </div>
               </div>
               <div>
                 {post?.comments?.map((comment: BlogType | any) => {
                   return (
-                    <BlogComment comment={comment} key={comment.profile.id} />
+                    <BlogComment key={comment.id} comment={comment} />
                   );
                 })}
               </div>
@@ -247,5 +224,4 @@ const BlogDetailData = () => {
     </>
   );
 };
-
 export default BlogDetailData;

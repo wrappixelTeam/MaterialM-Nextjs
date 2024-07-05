@@ -1,69 +1,50 @@
-import { useEffect } from "react";
-import BlogCard from "./BlogCard";
-import { useSelector, useDispatch } from "@/store/hooks";
-import { fetchBlogPosts } from "@/store/apps/blog/BlogSlice";
-import BlogFeaturedCard from "./BlogFeaturedCard";
-import { BlogPostType } from "../../../(DashboardLayout)/types/apps/blog";
-import { orderBy } from "lodash";
+'use client'
+import React, { useContext } from 'react';
+import { orderBy } from 'lodash';
+import BlogCard from './BlogCard';
+import { BlogContext } from '../../../context/BlogContext';
+import BlogFeaturedCard from './BlogFeaturedCard'
+
 const BlogListing = () => {
-  const dispatch = useDispatch();
+  const { posts, sortBy } = useContext(BlogContext);
 
-  useEffect(() => {
-    dispatch<any>(fetchBlogPosts());
-  }, [dispatch]);
+  // Function to filter blog posts based on sorting criteria
+  const filterBlogs = (posts: any[], sortBy: string) => {
+    let filteredPosts = [...posts];
 
-  const filterBlogs = (
-    posts: BlogPostType[],
-    sortBy: string,
-    _cSearch: string
-  ) => {
-    // SORT BY
-
-    if (sortBy === "newest") {
-      posts = orderBy(posts, ["createdAt"], ["desc"]);
-    }
-    if (sortBy === "oldest") {
-      posts = orderBy(posts, ["createdAt"], ["asc"]);
-    }
-    if (sortBy === "popular") {
-      posts = orderBy(posts, ["view"], ["desc"]);
-    }
-    if (posts) {
-      return (posts = posts.filter((t) => t.featured === false));
+    if (sortBy === 'newest') {
+      filteredPosts = orderBy(filteredPosts, ['createdAt'], ['desc']);
+    } else if (sortBy === 'oldest') {
+      filteredPosts = orderBy(filteredPosts, ['createdAt'], ['asc']);
+    } else if (sortBy === 'popular') {
+      filteredPosts = orderBy(filteredPosts, ['view'], ['desc']);
     }
 
-    return posts;
+    // Filter out featured posts
+    return filteredPosts.filter((post) => !post.featured);
   };
 
-  const filterFeaturedpost = (posts: BlogPostType[]) => {
-    return (posts = posts.filter((t) => t.featured));
+  // Function to filter featured posts
+  const filterFeaturedPosts = (posts: any[]) => {
+    return posts.filter((post) => post.featured);
   };
 
-  const blogPosts = useSelector((state) =>
-    filterBlogs(
-      state.blogReducer.blogposts,
-      state.blogReducer.sortBy,
-      state.blogReducer.blogSearch
-    )
-  );
-  const featuredPost = useSelector((state) =>
-    filterFeaturedpost(state.blogReducer.blogposts)
-  );
+  const blogPosts = filterBlogs(posts, sortBy);
+  const featuredPosts = filterFeaturedPosts(posts);
 
   return (
-    <>
-      <div className="grid grid-cols-12 gap-6">
-        {featuredPost.map((post, index) => {
-          return (
-            <BlogFeaturedCard index={index} post={post} key={post.title} />
-          );
-        })}
-        {blogPosts.map((post) => {
-          return <BlogCard post={post} key={post.id} />
-        })}
-      </div>
-    </>
+
+
+    <div className="grid grid-cols-12 gap-6">
+      {featuredPosts.map((post, index) => {
+        return (
+          <BlogFeaturedCard index={index} post={post} key={post.id} />
+        );
+      })}
+      {blogPosts.map((post) => {
+        return <BlogCard post={post} key={post.id} />
+      })}
+    </div>
   );
 };
-
 export default BlogListing;

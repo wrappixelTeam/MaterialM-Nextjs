@@ -2,12 +2,13 @@
 import React, { useContext, useState } from 'react';
 import profilepic from '../../../../../public/images/profile/user-5.jpg';
 import { ContactContext } from '@/app/context/Conatactcontext/index';
-import { Modal, Button, TextInput, Label, Select, Textarea } from 'flowbite-react'
+import { Modal, Button, TextInput, Label, Select, Textarea, Alert } from 'flowbite-react'
 import { IconX } from '@tabler/icons-react'
 
 const ContactAdd = () => {
   const { addContact } = useContext(ContactContext);
   const [show, setShow] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState(false); // State for showing alert
 
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
@@ -29,14 +30,21 @@ const ContactAdd = () => {
     setFormData({ ...formData, [name!]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     addContact(formData);
+    setShowAlert(true); // Show alert after adding contact
     handleClose();
+
+    // Hide alert after some time (e.g., 5 seconds)
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 5000);
   };
 
   return (
     <>
+
       <Button className='w-full' color={'primary'} onClick={handleShow}>Add New Contact</Button>
       <Modal show={show} onClose={handleClose} >
 
@@ -57,18 +65,22 @@ const ContactAdd = () => {
           <div>
             <form onSubmit={handleSubmit}>
               <div>
-                <div >
+                <div>
+                  <Label htmlFor="firstname" value="firstname" />
+
                   <TextInput
                     name="firstname"
+                    type="text"
                     onChange={handleChange}
                     value={formData.firstname}
                     required
                   />
                 </div>
                 <div >
-
+                  <Label htmlFor="lastname" value="lastname" />
                   <TextInput
                     name="lastname"
+                    type="text"
                     onChange={handleChange}
                     value={formData.lastname}
                     required
@@ -87,13 +99,16 @@ const ContactAdd = () => {
                   </div>
                 </div>
                 <div>
+                  <Label htmlFor="company" value="company" />
                   <TextInput
                     name="company"
+                    type="text"
                     onChange={handleChange}
                     value={formData.company}
                   />
                 </div>
                 <div >
+                  <Label htmlFor="phone" value="phone" />
                   <TextInput
                     name="phone"
                     type="tel"
@@ -102,6 +117,7 @@ const ContactAdd = () => {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="email" value="email" />
                   <TextInput
                     name="email"
                     type="email"
@@ -110,11 +126,13 @@ const ContactAdd = () => {
                     required
                   />
                 </div>
-                <div >
+                <div>
+                  <Label htmlFor="address" value="address" />
                   <Textarea id="address" name="address" placeholder="address..." required rows={4} onChange={handleChange}
                     value={formData.address} />
                 </div>
-                <div >
+                <div>
+                  <Label htmlFor="notes" value="notes" />
                   <Textarea id="notes" name="notes" placeholder="note..." required rows={4} onChange={handleChange}
                     value={formData.notes} />
                 </div>
@@ -133,6 +151,11 @@ const ContactAdd = () => {
           </div>
         </Modal.Body >
       </Modal>
+      {showAlert && (
+        <Alert color='warning' rounded className='fixed top-3 '>
+          Contact added successfully.
+        </Alert>
+      )}
     </>
   );
 };
