@@ -244,10 +244,12 @@ const gallery = [
   },
 ];
 
+// Mock endpoint to fetch users data
 mock.onGet('/api/data/users').reply(() => {
   return [200, users];
 });
 
+// Mock endpoint to fetch gallery data
 mock.onGet('/api/data/gallery').reply(() => {
   return [200, gallery];
 });

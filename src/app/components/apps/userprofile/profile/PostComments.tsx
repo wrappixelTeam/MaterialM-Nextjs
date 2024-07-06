@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { IconArrowBackUp, IconCircle, IconThumbUp } from "@tabler/icons-react";
 import { useDispatch } from "@/store/hooks";
 import uniqueId from "lodash/uniqueId";
@@ -11,6 +11,7 @@ import {
   ProfileType,
 } from "../../../../(DashboardLayout)/types/apps/userProfile";
 import { Avatar, Button, TextInput, Tooltip } from "flowbite-react";
+import { UserDataContext } from '@/app/context/UserDataContext/index';
 
 interface CommentProps {
   comment: CommentType | any;
@@ -21,13 +22,20 @@ interface ReplyProps {
   reply: Reply[];
   profile: ProfileType;
 }
+
 const PostComments = ({ comment, post }: CommentProps) => {
+
+  const { likeReply, addReply }: any = useContext(UserDataContext);
   const [replyTxt, setReplyTxt] = useState<any>("");
   const [showReply, setShowReply] = useState(false);
-  const dispatch = useDispatch();
+
+  const handleLikeReply = (postId: any, commentId: any) => {
+    likeReply(postId, commentId);
+  };
+
   const onSubmit = async (
-    id: number,
-    commentid: string | any,
+    postId: number,
+    commentId: string | any,
     reply: CommentDataType
   ) => {
     const replyId = uniqueId("#REPLY_");
@@ -48,10 +56,12 @@ const PostComments = ({ comment, post }: CommentProps) => {
         replies: [],
       },
     };
-    dispatch<any>(addReply(id, commentid, newReply));
-    setReplyTxt("");
+    addReply(postId, commentId, newReply);
+    setReplyTxt('');
     setShowReply(false);
   };
+
+
 
   return (
     <>
@@ -81,11 +91,12 @@ const PostComments = ({ comment, post }: CommentProps) => {
                 className="btn-circle p-0"
                 color={
                   comment?.data &&
-                  comment?.data.likes &&
-                  comment?.data.likes.like
+                    comment?.data.likes &&
+                    comment?.data.likes.like
                     ? "primary"
                     : "primary"
                 }
+                onClick={() => handleLikeReply(post?.id, comment?.id)}
               >
                 <IconThumbUp size="16" />
               </Button>

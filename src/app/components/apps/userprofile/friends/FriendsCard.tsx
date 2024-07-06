@@ -1,6 +1,4 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "@/store/hooks";
-import { fetchFollwores } from "@/store/apps/userProfile/UserProfileSlice";
+import React, { useContext } from "react";
 import {
   IconBrandFacebook,
   IconBrandGithub,
@@ -8,12 +6,14 @@ import {
   IconBrandTwitter,
   IconSearch,
 } from "@tabler/icons-react";
-import { userType } from "../../../../(DashboardLayout)/types/apps/users";
 import { Avatar, Badge, Button, TextInput } from "flowbite-react";
 import { Icon } from "@iconify/react";
 import CardBox from "@/app/components/shared/CardBox";
 import Image from "next/image";
 import Link from "next/link";
+import { UserDataContext } from '@/app/context/UserDataContext/index';
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+
 
 const socialiconCard = [
   {
@@ -34,29 +34,14 @@ const socialiconCard = [
   },
 ];
 const FriendsCard = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch<any>(fetchFollwores());
-  }, [dispatch]);
+  const { followers, setSearch }: any = useContext(UserDataContext);
 
-  const filterFriends = (friends: userType[], cSearch: string) => {
-    if (friends)
-      return friends.filter((t) =>
-        t.name.toLocaleLowerCase().includes(cSearch.toLocaleLowerCase())
-      );
-
-    return friends;
-  };
-  const [search, setSearch] = React.useState("");
-  const getFriends = useSelector((state) =>
-    filterFriends(state.userpostsReducer.followers, search)
-  );
 
   return (
     <>
       <div className="md:flex justify-between mb-6">
         <h5 className="text-2xl flex gap-3 items-center">
-          Friends <Badge color={"secondary"}>{getFriends.length}</Badge>
+          Friends <Badge color={"secondary"}>{followers.length}</Badge>
         </h5>
         <TextInput
           icon={() => <Icon icon="solar:magnifer-line-duotone" height={18} />}
@@ -68,7 +53,7 @@ const FriendsCard = () => {
         />
       </div>
       <div className="grid grid-cols-12 gap-[30px]">
-        {getFriends.map((profile) => {
+        {followers.map((profile: { id: React.Key | null | undefined; avatar: string | StaticImport; name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; role: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }) => {
           return (
             <div
               className="lg:col-span-4 md:col-span-3 sm:col-span-6 col-span-12"

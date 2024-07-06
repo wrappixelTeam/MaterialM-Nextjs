@@ -50,3 +50,14 @@ export type PostType = {
   profile: ProfileType;
   data: PostDataType;
 };
+
+
+export type profiledataType ={
+  name: string;
+  role:  string;
+  avatar:  string;
+  coverImage:  string;
+  postsCount: any;
+  followersCount: any;
+  followingCount:  any;
+}

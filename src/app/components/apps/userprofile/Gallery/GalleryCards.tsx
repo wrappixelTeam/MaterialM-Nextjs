@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "@/store/hooks";
-import { fetchPhotos } from "@/store/apps/userProfile/UserProfileSlice";
+import React, { useEffect, useContext } from "react";
+
 import { IconDotsVertical, IconSearch } from "@tabler/icons-react";
 import { format } from "date-fns";
 import { GallaryType } from "../../../../(DashboardLayout)/types/apps/users";
@@ -8,25 +7,22 @@ import { Badge, Button, Dropdown, TextInput } from "flowbite-react";
 import { Icon } from "@iconify/react";
 import CardBox from "@/app/components/shared/CardBox";
 import Image from "next/image";
+import { UserDataContext } from '@/app/context/UserDataContext/index';
+
 
 const GalleryCards = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch<any>(fetchPhotos());
-  }, [dispatch]);
 
-  const filterPhotos = (photos: GallaryType[], cSearch: string) => {
+  const { gallery }: any = useContext(UserDataContext);
+
+  const [search, setSearchLocal] = React.useState('');
+
+  const filterPhotos = (photos: any[], cSearch: string) => {
     if (photos)
-      return photos.filter((t) =>
-        t.name.toLocaleLowerCase().includes(cSearch.toLocaleLowerCase())
-      );
-
+      return photos.filter((t: { name: string; }) => t.name.toLocaleLowerCase().includes(cSearch.toLocaleLowerCase()));
     return photos;
   };
-  const [search, setSearch] = React.useState("");
-  const getPhotos = useSelector((state) =>
-    filterPhotos(state.userpostsReducer.gallery, search)
-  );
+
+  const getPhotos = filterPhotos(gallery, search);
 
   return (
     <>
@@ -40,7 +36,7 @@ const GalleryCards = () => {
           sizing="md"
           className="form-control "
           placeholder="Search Gallery"
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setSearchLocal(e.target.value)}
         />
       </div>
       <div className="grid grid-cols-12 gap-[30px]">

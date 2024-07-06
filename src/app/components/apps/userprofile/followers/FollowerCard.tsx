@@ -1,38 +1,19 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "@/store/hooks";
+import React, { useEffect, useContext } from "react";
 import { Icon } from "@iconify/react";
-import {
-  fetchFollwores,
-  onToggleFollow,
-} from "@/store/apps/userProfile/UserProfileSlice";
 import { IconMapPin, IconSearch } from "@tabler/icons-react";
 import { userType } from "../../../../(DashboardLayout)/types/apps/users";
-import { Avatar, Badge, Button, TextInput } from "flowbite-react";
+import { Avatar, AvatarImageProps, Badge, Button, TextInput } from "flowbite-react";
 import CardBox from "@/app/components/shared/CardBox";
+import { UserDataContext } from '@/app/context/UserDataContext/index';
+
 
 const FollowerCard = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch<any>(fetchFollwores());
-  }, [dispatch]);
-
-  const filterFollowers = (followers: userType[], cSearch: string) => {
-    if (followers)
-      return followers.filter((t) =>
-        t.name.toLocaleLowerCase().includes(cSearch.toLocaleLowerCase())
-      );
-
-    return followers;
-  };
-  const [search, setSearch] = React.useState("");
-  const getFollowers = useSelector((state) =>
-    filterFollowers(state.userpostsReducer.followers, search)
-  );
+  const { followers, toggleFollow, setSearch }: any = useContext(UserDataContext);
   return (
     <>
       <div className="md:flex justify-between mb-6">
         <h5 className="text-2xl flex gap-3 items-center">
-          Followers <Badge color={"secondary"}>{getFollowers.length}</Badge>
+          Followers <Badge color={"secondary"}>{followers.length}</Badge>
         </h5>
         <TextInput
           icon={() => <Icon icon="solar:magnifer-line-duotone" height={18} />}
@@ -44,7 +25,7 @@ const FollowerCard = () => {
         />
       </div>
       <div className="grid grid-cols-12 gap-[30px]">
-        {getFollowers.map((profile) => {
+        {followers.map((profile: { id: React.Key | null | undefined; avatar: string | ((props: AvatarImageProps) => React.ReactElement) | undefined; name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; country: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; isFollowed: any; }) => {
           return (
             <div
               className="lg:col-span-4 md:col-span-3 sm:col-span-6 col-span-12"
@@ -64,7 +45,7 @@ const FollowerCard = () => {
                       <Button
                         color={"primary"}
                         size={'sm'}
-                        onClick={() => dispatch(onToggleFollow(profile.id))}
+                        onClick={() => toggleFollow(profile.id)}
                       >
                         Followed
                       </Button>
@@ -72,7 +53,7 @@ const FollowerCard = () => {
                       <Button
                         color={"outlineprimary"}
                         size={'sm'}
-                        onClick={() => dispatch(onToggleFollow(profile.id))}
+                        onClick={() => toggleFollow(profile.id)}
                       >
                         Follow
                       </Button>

@@ -7,6 +7,8 @@ import NoteContent from "@/app/components/apps/notes/NoteContent";
 import AddNotes from "@/app/components/apps/notes/AddNotes";
 import { IconMenu2 } from "@tabler/icons-react";
 import { Button, Drawer } from "flowbite-react";
+import { NotesProvider } from '@/app/context/NotesContext/index'
+
 interface colorsType {
   lineColor: string;
   disp: string | any;
@@ -53,39 +55,41 @@ const Notes = () => {
   ];
   return (
     <>
-      <BreadcrumbComp title="Notes app" items={BCrumb} />
-      <CardBox className="p-0">
-        <div className="flex">
-          {/* NOTES SIDEBAR */}
-          <div>
-            <Drawer
-              open={isOpen}
-              onClose={handleClose}
-              className="lg:relative lg:transform-none lg:h-auto lg:bg-transparent"
-            >
-              <NotesSidebar />
-            </Drawer>
-          </div>
-
-          {/* NOTES CONTENT */}
-          <div className="w-full">
-            <div className="flex justify-between items-center border-b border-ld py-4 px-6">
-              <div className="flex gap-3 items-center">
-                <Button
-                  color={"lightprimary"}
-                  onClick={() => setIsOpen(true)}
-                  className="btn-circle p-0 lg:hidden flex"
-                >
-                  <IconMenu2 size={18} />
-                </Button>
-                <h6 className="text-base"> Edit Note</h6>
-              </div>
-              <AddNotes colors={colorvariation} />
+      <NotesProvider>
+        <BreadcrumbComp title="Notes app" items={BCrumb} />
+        <CardBox className="p-0">
+          <div className="flex">
+            {/* NOTES SIDEBAR */}
+            <div>
+              <Drawer
+                open={isOpen}
+                onClose={handleClose}
+                className="lg:relative lg:transform-none lg:h-auto lg:bg-transparent"
+              >
+                <NotesSidebar />
+              </Drawer>
             </div>
-            <NoteContent />
+
+            {/* NOTES CONTENT */}
+            <div className="w-full">
+              <div className="flex justify-between items-center border-b border-ld py-4 px-6">
+                <div className="flex gap-3 items-center">
+                  <Button
+                    color={"lightprimary"}
+                    onClick={() => setIsOpen(true)}
+                    className="btn-circle p-0 lg:hidden flex"
+                  >
+                    <IconMenu2 size={18} />
+                  </Button>
+                  <h6 className="text-base"> Edit Note</h6>
+                </div>
+                <AddNotes colors={colorvariation} />
+              </div>
+              <NoteContent />
+            </div>
           </div>
-        </div>
-      </CardBox>
+        </CardBox>
+      </NotesProvider>
     </>
   );
 };

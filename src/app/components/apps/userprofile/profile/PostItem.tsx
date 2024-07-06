@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   IconCircle,
   IconMessage2,
@@ -6,11 +6,6 @@ import {
   IconThumbUp,
 } from "@tabler/icons-react";
 import uniqueId from "lodash/uniqueId";
-import { useDispatch, useSelector } from "@/store/hooks";
-import {
-  likePosts,
-  addComment,
-} from "@/store/apps/userProfile/UserProfileSlice";
 import PostComments from "./PostComments";
 import {
   Comment as CommentType,
@@ -19,28 +14,29 @@ import {
 import CardBox from "@/app/components/shared/CardBox";
 import { Avatar, Button, HR, TextInput, Tooltip } from "flowbite-react";
 import Image from "next/image";
+import { UserDataContext } from '@/app/context/UserDataContext/index';
 
 interface Props {
   post: PostType;
 }
 
 const PostItem = ({ post }: Props) => {
-  const dispatch = useDispatch();
-  const customizer = useSelector((state) => state.customizer);
-  const handleLike = async (postId: number) => {
-    dispatch<any>(likePosts(postId));
-  };
+  const { likePost, addComment }: any = useContext(UserDataContext);
   const [comText, setComText] = useState<any>("");
 
-  const onSubmit = async (id: number, comment: CommentType) => {
-    const commentId = uniqueId("#COMMENT_");
-    const newComment: any = {
+  const handleLike = (postId: any) => {
+    likePost(postId);
+  };
+
+  const onSubmit = async (postId: number, comment: CommentType) => {
+    const commentId = uniqueId('#COMMENT_');
+    const newComment = {
       id: commentId,
       profile: {
-        id: uniqueId("#COMMENT_"),
+        id: uniqueId('#COMMENT_'),
         avatar: post?.profile.avatar,
         name: post?.profile.name,
-        time: "now",
+        time: 'now',
       },
       data: {
         comment: comment,
@@ -51,10 +47,10 @@ const PostItem = ({ post }: Props) => {
         replies: [],
       },
     };
-
-    dispatch<any>(addComment(id, newComment));
-    setComText("");
+    addComment(postId, newComment);
+    setComText('');
   };
+
   return (
     <>
       <CardBox className="p-0">
@@ -76,9 +72,8 @@ const PostItem = ({ post }: Props) => {
                 return (
                   <div
                     key={photo.img}
-                    className={`lg:col-span-${
-                      photo.featured ? 12 : 6
-                    } md:col-span-12 col-span-12`}
+                    className={`lg:col-span-${photo.featured ? 12 : 6
+                      } md:col-span-12 col-span-12`}
                   >
                     <div className="h-[360px] overflow-hidden rounded-lg">
                       <Image
@@ -165,7 +160,6 @@ const PostItem = ({ post }: Props) => {
             )}
           </div>
         </div>
-
         <HR className="my-4" />
         <div className="flex gap-3 items-center justify-between px-6 pb-6">
           <div className="w-14">
@@ -179,7 +173,9 @@ const PostItem = ({ post }: Props) => {
             value={comText}
             onChange={(e) => setComText(e.target.value)}
           />
-          <Button onClick={() => onSubmit(post?.id, comText)} color={"primary"}>
+          <Button
+            onClick={() => onSubmit(post?.id, comText)}
+            color={"primary"}>
             Comment
           </Button>
         </div>

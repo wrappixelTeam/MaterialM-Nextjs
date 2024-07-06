@@ -80,7 +80,7 @@ const ProfileBanner = () => {
           </div>
         </div>
         {/* Profile Tabs */}
-        <ProfileTab/>
+        <ProfileTab />
       </CardBox>
     </>
   );

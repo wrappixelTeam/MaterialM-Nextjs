@@ -34,7 +34,44 @@ const NotesData = [
     deleted: false,
   },
 ];
+
+// Mock GET request to retrieve Notes data
 mock.onGet('/api/data/notes/NotesData').reply(() => {
   return [200, NotesData];
+});
+
+// Mock DELETE endpoint for deleting a note
+mock.onDelete('/api/notes/delete').reply((config) => {
+  const { id } = config.params;
+  const note = NotesData.filter((note) => note.id !== parseInt(id));
+  return [200, note];
+});
+
+// Mock POST endpoint for adding a new note
+const currentDate = new Date();
+mock.onPost('/api/notes/add').reply((config) => {
+  const { title, color } = JSON.parse(config.data);
+  const newNote = {
+    id: NotesData.length + 1,
+    title,
+    color,
+    deleted: false,
+    datef: currentDate.toISOString(),
+  };
+  NotesData.push(newNote);
+  return [200, newNote];
+});
+
+// Mock PUT endpoint for updating a note
+mock.onPut('/api/notes/update').reply((config) => {
+  const { id, title, color } = JSON.parse(config.data);
+  const index = NotesData.findIndex((note) => note.id === id);
+
+  if (index !== -1) {
+    NotesData[index] = { ...NotesData[index], title, color };
+    return [200, NotesData[index]];
+  } else {
+    return [404, { error: 'Note not found' }];
+  }
 });
 export default NotesData;

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
 import CardBox from "@/app/components/shared/CardBox";
+
 const photos = [
   {
     img: "/images/profile/user-10.jpg",
@@ -48,7 +49,7 @@ const Photos = () => {
         <div className="grid grid-cols-12 gap-[30px]">
           {photos.map((photo) => (
             <div className="md:col-span-4 sm:col-span-6 col-span-12">
-              <Image src={photo.img} alt={photo.img} width={92} height={92}  className="rounded-md"/>
+              <Image src={photo.img} alt={photo.img} width={92} height={92} className="rounded-md" />
             </div>
           ))}
         </div>

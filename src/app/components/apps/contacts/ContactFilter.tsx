@@ -21,7 +21,7 @@ interface DataType {
 }
 
 const ContactFilter = () => {
-  const { setSelectedDepartment, updateSearchTerm }: any = useContext(ContactContext);
+  const { setSelectedDepartment, updateSearchTerm, selectedDepartment }: any = useContext(ContactContext);
   const filterData: DataType[] = [
     {
       id: 2,
@@ -98,7 +98,7 @@ const ContactFilter = () => {
             }
             return (
               <List.Item key={filter.id}
-                className="py-[10px] gap-2 px-4 hover:bg-muted dark:hover:bg-darkmuted rounded-md text-ld cursor-pointer"
+                className={`py-[10px] gap-2 px-4 hover:bg-muted dark:hover:bg-darkmuted rounded-md text-ld cursor-pointer ${selectedDepartment === filter.name ? "text-primary bg-lightprimary" : ""}`}
                 icon={() => <filter.icon size={18} className={`text-${filter.color}`} />}
                 onClick={() => handleDepartmentClick(filter.name)}
               >

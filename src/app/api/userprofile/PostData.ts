@@ -168,6 +168,7 @@ mock.onGet('/api/data/postData').reply(() => {
   return [200, posts];
 });
 
+// Mock endpoint to like a post
 mock.onPost('/api/data/posts/like').reply((config) => {
   try {
     const { postId } = JSON.parse(config.data);
@@ -188,7 +189,7 @@ mock.onPost('/api/data/posts/like').reply((config) => {
     return [500, { message: 'Internal server error' }];
   }
 });
-
+// Mock endpoint to add a comment to a post
 mock.onPost('/api/data/posts/comments/add').reply((config) => {
   try {
     const { postId, comment } = JSON.parse(config.data);
@@ -205,6 +206,7 @@ mock.onPost('/api/data/posts/comments/add').reply((config) => {
   }
 });
 
+// Mock endpoint to add a reply to a comment
 mock.onPost('/api/data/posts/replies/add').reply((config) => {
   try {
     const { postId, commentId, reply } = JSON.parse(config.data);
@@ -224,6 +226,7 @@ mock.onPost('/api/data/posts/replies/add').reply((config) => {
   }
 });
 
+// Mock endpoint to like a reply to a comment
 mock.onPost('/api/data/posts/replies/like').reply((config) => {
   try {
     const { postId, commentId } = JSON.parse(config.data);
@@ -248,5 +251,4 @@ mock.onPost('/api/data/posts/replies/like').reply((config) => {
     return [500, { message: 'Internal server error' }];
   }
 });
-
 export default posts;
