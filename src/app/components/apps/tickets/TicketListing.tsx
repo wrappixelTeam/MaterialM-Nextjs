@@ -1,11 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "@/store/hooks";
+import React, { useEffect, useContext } from "react";
 import { format } from "date-fns";
-import {
-  fetchTickets,
-  DeleteTicket,
-  SearchTicket,
-} from "@/store/apps/tickets/TicketSlice";
 import { IconTrash } from "@tabler/icons-react";
 import { Icon } from "@iconify/react";
 import {
@@ -17,13 +11,12 @@ import {
   Tooltip,
 } from "flowbite-react";
 import { TicketType } from "@/app/(DashboardLayout)/types/apps/ticket";
+import { TicketContext } from '@/app/context/TicketContext/index';
+
 
 const TicketListing = () => {
-  const dispatch = useDispatch();
+  const { tickets, deleteTicket, searchTickets, ticketSearch, filter }: any = useContext(TicketContext);
 
-  useEffect(() => {
-    dispatch<any>(fetchTickets());
-  }, [dispatch]);
 
   const getVisibleTickets = (
     tickets: TicketType[],
@@ -67,23 +60,18 @@ const TicketListing = () => {
     }
   };
 
-  const tickets = useSelector((state) =>
-    getVisibleTickets(
-      state.ticketReducer.tickets,
-      state.ticketReducer.currentFilter,
-      state.ticketReducer.ticketSearch
-    )
-  );
+
+  const visibleTickets = getVisibleTickets(tickets, filter, ticketSearch.toLowerCase())
   const ticketBadge = (ticket: TicketType) => {
     return ticket.Status === "Open"
       ? "success"
       : ticket.Status === "Closed"
-      ? "error"
-      : ticket.Status === "Pending"
-      ? "warning"
-      : ticket.Status === "Moderate"
-      ? "primary"
-      : "primary";
+        ? "error"
+        : ticket.Status === "Pending"
+          ? "warning"
+          : ticket.Status === "Moderate"
+            ? "primary"
+            : "primary";
   };
 
   return (
@@ -94,7 +82,7 @@ const TicketListing = () => {
             type="text"
             sizing="md"
             className="form-control max-w-60"
-            onChange={(e) => dispatch(SearchTicket(e.target.value))}
+            onChange={(e) => searchTickets(e.target.value)}
             placeholder="Search"
             icon={() => <Icon icon="solar:magnifer-line-duotone" height={18} />}
           />
@@ -121,7 +109,7 @@ const TicketListing = () => {
             </Table.HeadCell>
           </Table.Head>
           <Table.Body className="divide-y divide-border dark:divide-darkborder ">
-            {tickets.map((ticket) => (
+            {visibleTickets.map((ticket) => (
               <Table.Row key={ticket.Id}>
                 <Table.Cell className="whitespace-nowrap">
                   {ticket.Id}
@@ -161,12 +149,12 @@ const TicketListing = () => {
                   </p>
                 </Table.Cell>
                 <Table.Cell>
-                  <Tooltip content="Delete Ticket"  placement="bottom" arrow={false}>
+                  <Tooltip content="Delete Ticket" placement="bottom" arrow={false}>
                     <Button className="btn-circle ms-auto" color={'transparent'}>
                       <IconTrash
                         size="18"
                         className=""
-                        onClick={() => dispatch(DeleteTicket(ticket.Id))}
+                        onClick={() => deleteTicket(ticket.Id)}
                       />
                     </Button>
                   </Tooltip>

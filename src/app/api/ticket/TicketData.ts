@@ -103,7 +103,17 @@ const TicketData: TicketType[] = [
   },
 ];
 
+// Mock GET request to retrieve Ticket data
 mock.onGet('/api/data/ticket/TicketData').reply(() => {
   return [200, TicketData];
+});
+
+//Mock DELETE endpoint for deleting a ticket
+mock.onDelete('/api/data/ticket/delete').reply((config) => {
+  const { id } = JSON.parse(config.data);
+  const ticket = TicketData.map(ticket =>
+    ticket.Id === id ? { ...ticket, deleted: true } : ticket
+  );
+  return [200, ticket];
 });
 export default TicketData;

@@ -2,25 +2,27 @@
 import * as React from "react";
 import { addNote } from "@/store/apps/notes/NotesSlice";
 import { Button, Modal, Textarea } from "flowbite-react";
-import { useSelector, useDispatch } from "@/store/hooks";
 import { IconCheck } from "@tabler/icons-react";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { NotesContext } from '@/app/context/NotesContext/index';
+
 
 interface Props {
   colors: any[];
 }
 
 const AddNotes = ({ colors }: Props) => {
+  const { addNote }: any = useContext(NotesContext);
+
   const [openNoteModal, setOpenNoteModal] = useState(false);
-  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
   const [scolor, setScolor] = React.useState<string>("primary");
-  const id = useSelector((state) => state.notesReducer.notes.length + 1);
   const [title, setTitle] = React.useState("");
 
   const setColor = (e: string) => {
     setScolor(e);
   };
+
 
   return (
     <>
@@ -43,16 +45,16 @@ const AddNotes = ({ colors }: Props) => {
             <div className="flex gap-2 items-center">
               {colors
                 ? colors.map((color) => (
-                    <div
-                      className={`h-7 w-7 flex justify-center items-center rounded-full cursor-pointer  bg-${color.disp}`}
-                      key={color.disp}
-                      onClick={() => setColor(color.disp)}
-                    >
-                      {scolor === color.disp ? (
-                        <IconCheck width="18" className="text-white" />
-                      ) : null}
-                    </div>
-                  ))
+                  <div
+                    className={`h-7 w-7 flex justify-center items-center rounded-full cursor-pointer  bg-${color.disp}`}
+                    key={color.disp}
+                    onClick={() => setColor(color.disp)}
+                  >
+                    {scolor === color.disp ? (
+                      <IconCheck width="18" className="text-white" />
+                    ) : null}
+                  </div>
+                ))
                 : ''}
             </div>
           </div>
@@ -63,7 +65,7 @@ const AddNotes = ({ colors }: Props) => {
             disabled={title === ""}
             onClick={(e: { preventDefault: () => void }) => {
               e.preventDefault();
-              dispatch(addNote(id, title, scolor));
+              addNote({ title, color: scolor });
               setOpenNoteModal(false);
               setTitle("");
             }}

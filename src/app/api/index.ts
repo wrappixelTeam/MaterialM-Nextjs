@@ -8,5 +8,6 @@ import './ticket/TicketData';
 // import './email/EmailData';
 import './userprofile/PostData';
 import './userprofile/UsersData';
+import './notes/NotesData'
 
 mock.onAny().passThrough();

@@ -15,8 +15,10 @@ import {
   TextInput,
 } from "flowbite-react";
 
+
 moment.locale("en-GB");
 const localizer = momentLocalizer(moment);
+
 
 type EvType = {
   title: string;
@@ -79,12 +81,9 @@ const CalendarApp = () => {
     setStart(slotInfo.start);
     setEnd(slotInfo.end);
   };
-
   const editEvent = (event: any) => {
     setOpen(true);
-    const newEditEvent = calevents.find(
-      (elem: EvType) => elem.title === event.title
-    );
+    const newEditEvent = calevents.find((elem: EvType) => elem.title === event.title);
     setColor(event.color);
     setTitle(newEditEvent.title);
     setColor(newEditEvent.color);
@@ -92,7 +91,6 @@ const CalendarApp = () => {
     setEnd(newEditEvent.end);
     setUpdate(event);
   };
-
   const updateEvent = (e: any) => {
     e.preventDefault();
     setCalEvents(
@@ -126,10 +124,11 @@ const CalendarApp = () => {
     setOpen(false);
     e.target.reset();
     setCalEvents(newEvents);
-    setTitle("");
+    setTitle('');
     setStart(new Date());
     setEnd(new Date());
   };
+
   const deleteHandler = (event: EvType) => {
     const updatecalEvents = calevents.filter(
       (ind: EvType) => ind.title !== event.title
@@ -150,7 +149,6 @@ const CalendarApp = () => {
     if (event.color) {
       return { className: `event-${event.color}` };
     }
-
     return { className: `event-default` };
   };
 
@@ -160,7 +158,6 @@ const CalendarApp = () => {
   const handleEndChange = (newValue: any) => {
     setEnd(newValue);
   };
-
   return (
     <>
       <BreadcrumbComp title="Calendar" items={BCrumb} />
@@ -215,10 +212,8 @@ const CalendarApp = () => {
                 <Datepicker
                   value={start}
                   className="form-control"
-                  onChange={handleStartChange}
-                />
+                  onChange={handleStartChange} />
               </div>
-
               <div>
                 <div className="mb-2 block">
                   <Label htmlFor="EndDate" value="End Date" />
@@ -249,7 +244,7 @@ const CalendarApp = () => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-           
+
             {update ? (
               <Button
                 type="submit"
